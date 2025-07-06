@@ -48,14 +48,14 @@ const Agend = () => {
   // Servicios disponibles
   const services = [
     {
-      id: 'consulta',
+      id: 'Evaluación particular',
       name: 'Evaluación particular',
       duration: '15 min',
       price: '$10.000'
     },
     {
-      id: 'evaluacion',
-      name: 'Evaluacón ortodoncia',
+      id: 'Evaluación ortodoncia',
+      name: 'Evaluación ortodoncia',
       duration: '15 min',
       price: '$15.000'
     }
