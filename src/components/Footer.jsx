@@ -15,13 +15,24 @@ const Footer = () => {
             </p>
             <div className="flex space-x-4">
               <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer">
-                <span className="text-sm">f</span>
+                <span className="text-sm">
+                  <a
+                    href="https://www.instagram.com/nunoa.dental/"
+                    target="_blank"
+                  >
+                    i
+                  </a>
+                </span>
               </div>
               <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer">
-                <span className="text-sm">t</span>
-              </div>
-              <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer">
-                <span className="text-sm">in</span>
+                <span className="text-sm">
+                  <a
+                    href="https://www.facebook.com/profile.php?id=100064991743718"
+                    target="_blank"
+                  >
+                    f
+                  </a>
+                </span>
               </div>
             </div>
           </div>
@@ -158,12 +169,12 @@ const Footer = () => {
             >
               Términos de Uso
             </a>
-            <a
-              href="#"
+            <Link
+              to="/ocult"
               className="text-white/90 hover:text-white transition-colors"
             >
-              Cookies
-            </a>
+              Dashboard
+            </Link>
           </div>
         </div>
       </div>

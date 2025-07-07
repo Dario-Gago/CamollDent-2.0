@@ -29,6 +29,65 @@ const Dashboard = () => {
     const [year, month, day] = cleanDate.split('-')
     return `${day}/${month}/${year}`
   }
+  const citasDeHoy = appointments.filter((appt) => {
+    const apptDate = new Date(appt.date)
+    const today = new Date()
+
+    return (
+      apptDate.getDate() === today.getDate() &&
+      apptDate.getMonth() === today.getMonth() &&
+      apptDate.getFullYear() === today.getFullYear()
+    )
+  })
+  // Alternativa más robusta usando formato chileno
+  // Versión más explícita que maneja diferentes formatos de fecha
+  const isPastAppointmentRobust = (apptDateStr, apptTimeStr) => {
+    try {
+      let year, month, day
+
+      // Detectar formato de fecha
+      if (apptDateStr.includes('-')) {
+        // Formato YYYY-MM-DD
+        ;[year, month, day] = apptDateStr.split('-')
+      } else if (apptDateStr.includes('/')) {
+        // Formato DD/MM/YYYY (chileno)
+        ;[day, month, year] = apptDateStr.split('/')
+      } else {
+        console.error('Formato de fecha no reconocido:', apptDateStr)
+        return false
+      }
+
+      // Parsear tiempo
+      const [hours, minutes] = apptTimeStr.split(':')
+
+      // Crear objeto Date (month - 1 porque los meses en JS empiezan en 0)
+      const appointmentDateTime = new Date(
+        parseInt(year),
+        parseInt(month) - 1,
+        parseInt(day),
+        parseInt(hours),
+        parseInt(minutes)
+      )
+
+      // Verificar si la fecha es válida
+      if (isNaN(appointmentDateTime.getTime())) {
+        console.error('Fecha inválida creada con:', {
+          year,
+          month,
+          day,
+          hours,
+          minutes
+        })
+        return false
+      }
+
+      const now = new Date()
+      return appointmentDateTime < now
+    } catch (error) {
+      console.error('Error al comparar fechas:', error)
+      return false
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-lime-50 p-4 md:p-8">
@@ -74,14 +133,7 @@ const Dashboard = () => {
                 <p className="text-lime-100 text-sm font-medium">
                   Citas de Hoy
                 </p>
-                <p className="text-3xl font-bold">
-                  {
-                    appointments.filter(
-                      (appt) =>
-                        appt.date === new Date().toISOString().split('T')[0]
-                    ).length
-                  }
-                </p>
+                <p className="text-3xl font-bold">{citasDeHoy.length}</p>
               </div>
               <Clock className="h-12 w-12 text-lime-200" />
             </div>
@@ -118,6 +170,12 @@ const Dashboard = () => {
                 key={appt.id}
                 className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] overflow-hidden"
               >
+                {isPastAppointmentRobust(appt.date, appt.time) && (
+                  <div className="bg-red-100 text-red-700 px-4 py-2 rounded-t-2xl text-sm font-semibold border-b border-red-300">
+                    ⚠️ Esta cita ya ha pasado
+                  </div>
+                )}
+
                 <div className="p-6">
                   <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-4">
                     <div className="flex items-center gap-3 mb-3 lg:mb-0">

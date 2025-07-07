@@ -13,6 +13,7 @@ import Contact from '../pages/Contact'
 import Services from '../pages/Services'
 import About from '../pages/About'
 import Agend from '../pages/Agend'
+import Ocult from '../pages/Ocult'
 
 const AppRouter = () => {
   return (
@@ -29,6 +30,7 @@ const AppRouter = () => {
               <Route path="/services" element={<Services />} />
               <Route path="/about" element={<About />} />
               <Route path="/agend" element={<Agend />} />
+              <Route path="/ocult" element={<Ocult />}></Route>
             </Routes>
           </main>
           <WhatsAppFloatingButton></WhatsAppFloatingButton>

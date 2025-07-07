@@ -143,12 +143,6 @@ const Agend = () => {
     return dates
   }
 
-  // Función para validar email
-  const validateEmail = (email) => {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    return re.test(email)
-  }
-
   // Obtener información del servicio seleccionado
   const selectedServiceInfo = services.find((s) => s.id === selectedService)
 
@@ -356,10 +350,6 @@ const Agend = () => {
       setSelectedTime('')
     }
   }, [selectedDate])
-
-  if (isAuthenticated) {
-    return <Dashboard />
-  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 p-6">
@@ -631,7 +621,6 @@ const Agend = () => {
           </div>
         </div>
       </div>
-      <Login />
     </div>
   )
 }
