@@ -1,7 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react'
-import Login from '../components/Login'
-import AuthContext from '../contexts/AuthContext'
-import Dashboard from '../components/Dashboard'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import {
@@ -25,7 +22,6 @@ const Agend = () => {
   const [clientRut, setClientRut] = useState('')
   const [clientPhone, setClientPhone] = useState('')
 
-  const { isAuthenticated } = useContext(AuthContext)
   const url = import.meta.env.VITE_API_URL
 
   // Horarios disponibles
