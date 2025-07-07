@@ -154,19 +154,13 @@ const Footer = () => {
         {/* Bottom Section */}
         <div className="mt-8 pt-8 border-t border-white/20 flex flex-col md:flex-row justify-between items-center">
           <div className="text-white/90 text-sm mb-4 md:mb-0">
-            © 2024 CamollDent. Todos los derechos reservados.
+            © 2025 CamollDent. Todos los derechos reservados.
           </div>
           <div className="flex space-x-6 text-sm">
-            <Link
-              href="#"
-              className="text-white/90 hover:text-white transition-colors"
-            >
+            <Link className="text-white/90 hover:text-white transition-colors">
               Política de Privacidad
             </Link>
-            <a
-              href="#"
-              className="text-white/90 hover:text-white transition-colors"
-            >
+            <a className="text-white/90 hover:text-white transition-colors">
               Términos de Uso
             </a>
             <Link
