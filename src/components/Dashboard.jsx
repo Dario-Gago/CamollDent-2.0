@@ -14,15 +14,51 @@ import {
 const url = import.meta.env.VITE_API_URL
 
 const Dashboard = () => {
-  const { logout } = useContext(AuthContext)
+  const { logout, token } = useContext(AuthContext) // Agregamos token
   const [appointments, setAppointments] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
-    axios
-      .get(`${url}/appointments`)
-      .then((res) => setAppointments(res.data))
-      .catch((err) => console.error('Error al cargar citas:', err))
-  }, [])
+    const fetchAppointments = async () => {
+      try {
+        setLoading(true)
+
+        // Verificar que tenemos token
+        if (!token) {
+          setError('No hay token de autenticación')
+          logout()
+          return
+        }
+
+        // Configurar headers con el token
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+
+        const response = await axios.get(`${url}/appointments`, config)
+        setAppointments(response.data)
+        setError('')
+      } catch (err) {
+        console.error('Error al cargar citas:', err)
+
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          // Token inválido o expirado
+          setError('Sesión expirada. Por favor, inicia sesión nuevamente.')
+          logout()
+        } else {
+          setError('Error al cargar las citas')
+        }
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchAppointments()
+  }, [token, logout]) // Agregamos token como dependencia
 
   const formatDate = (dateString) => {
     // Eliminar la parte del timestamp y formatear para Chile (DD/MM/YYYY)
@@ -30,6 +66,7 @@ const Dashboard = () => {
     const [year, month, day] = cleanDate.split('-')
     return `${day}/${month}/${year}`
   }
+
   const citasDeHoy = appointments.filter((appt) => {
     const apptDate = new Date(appt.date)
     const today = new Date()
@@ -40,8 +77,7 @@ const Dashboard = () => {
       apptDate.getFullYear() === today.getFullYear()
     )
   })
-  // Alternativa más robusta usando formato chileno
-  // Versión más explícita que maneja diferentes formatos de fecha
+
   const isPastAppointmentRobust = (apptDateStr, apptTimeStr) => {
     try {
       let year, month, day
@@ -88,6 +124,37 @@ const Dashboard = () => {
       console.error('Error al comparar fechas:', error)
       return false
     }
+  }
+
+  // Mostrar loading
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-lime-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 text-lg">Cargando citas...</p>
+        </div>
+      </div>
+    )
+  }
+
+  // Mostrar error
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-lime-50 flex items-center justify-center">
+        <div className="bg-white rounded-2xl shadow-lg p-8 max-w-md text-center">
+          <div className="text-red-500 text-6xl mb-4">⚠️</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Error</h2>
+          <p className="text-gray-600 mb-6">{error}</p>
+          <button
+            onClick={logout}
+            className="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
+          >
+            Volver al Login
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (

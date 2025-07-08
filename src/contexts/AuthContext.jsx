@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate()
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token') // Obetener el token al principio
+    const storedToken = sessionStorage.getItem('token') // Obetener el token al principio
     if (storedToken) {
       setToken(storedToken)
       setIsAuthenticated(true)
@@ -17,13 +17,13 @@ export const AuthProvider = ({ children }) => {
   }, [])
 
   const login = (newToken) => {
-    localStorage.setItem('token', newToken)
+    sessionStorage.setItem('token', newToken)
     setToken(newToken)
     setIsAuthenticated(true)
   }
 
   const logout = () => {
-    localStorage.removeItem('token')
+    sessionStorage.removeItem('token')
     setToken(null)
     setIsAuthenticated(false)
     navigate('/agend')

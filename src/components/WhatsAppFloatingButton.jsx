@@ -9,7 +9,7 @@ const WhatsAppFloatingButton = () => {
     {
       id: 1,
       name: 'Ñuñoa',
-      number: '56912345678', // Ejemplo número chileno
+      number: '56962130282', // Ejemplo número chileno
       message: 'Hola, me interesa obtener más información sobre sus productos'
     },
     {

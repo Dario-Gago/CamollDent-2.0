@@ -5,8 +5,9 @@ const {
   addAppointment,
   fetchAppointments
 } = require('../src/controllers/appointmentController')
+const verifyToken = require('../middlewares/authMiddleware')
 
-router.get('/', getAppointmentsAll)
+router.get('/', verifyToken, getAppointmentsAll)
 router.post('/', addAppointment)
 router.get('/schedules', fetchAppointments)
 
