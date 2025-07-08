@@ -17,6 +17,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const { login } = useContext(AuthContext)
+  const url = import.meta.env.VITE_API_URL
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value })
@@ -27,7 +28,7 @@ const Login = () => {
     e.preventDefault()
     setIsLoading(true)
     try {
-      const response = await axios.post('http://localhost:3001/api/login', form)
+      const response = await axios.post(`${url}/login`, form)
       login(response.data.token)
     } catch (err) {
       setError('Correo o contraseña incorrectos')

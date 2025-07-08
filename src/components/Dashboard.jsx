@@ -11,6 +11,7 @@ import {
   CreditCard,
   Briefcase
 } from 'lucide-react'
+const url = import.meta.env.VITE_API_URL
 
 const Dashboard = () => {
   const { logout } = useContext(AuthContext)
@@ -18,7 +19,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:3001/api/appointments')
+      .get(`${url}/appointments`)
       .then((res) => setAppointments(res.data))
       .catch((err) => console.error('Error al cargar citas:', err))
   }, [])
