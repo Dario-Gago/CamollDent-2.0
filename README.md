@@ -1,72 +1,71 @@
-<h1 align="center">Camolldent 2 0</h1>
+# 🦷 CamollDent
 
-<p align="center">
-  <img alt="Github top language" src="https://img.shields.io/github/languages/top/{{YOUR_GITHUB_USERNAME}}/camolldent-2-0?color=56BEB8">
-  <img alt="Github language count" src="https://img.shields.io/github/languages/count/{{YOUR_GITHUB_USERNAME}}/camolldent-2-0?color=56BEB8">
-  <img alt="Repository size" src="https://img.shields.io/github/repo-size/{{YOUR_GITHUB_USERNAME}}/camolldent-2-0?color=56BEB8">
-  <img alt="License" src="https://img.shields.io/github/license/{{YOUR_GITHUB_USERNAME}}/camolldent-2-0?color=56BEB8">
-</p>
+**CamollDent** es una plataforma web moderna diseñada para clínicas dentales, desarrollada por **Darío Gago**. Ofrece una experiencia fluida tanto para profesionales como para pacientes, permitiendo la gestión eficiente de citas, usuarios y comunicaciones.
 
-<p align="center">
-  <a href="#dart-about">About</a> &#xa0; | &#xa0;
-  <a href="#sparkles-features">Features</a> &#xa0; | &#xa0;
-  <a href="#rocket-technologies">Technologies</a> &#xa0; | &#xa0;
-  <a href="#white_check_mark-requirements">Requirements</a> &#xa0; | &#xa0;
-  <a href="#checkered_flag-starting">Starting</a> &#xa0; | &#xa0;
-  <a href="#memo-license">License</a> &#xa0; | &#xa0;
-  <a href="https://github.com/{{YOUR_GITHUB_USERNAME}}" target="_blank">Author</a>
-</p>
+---
 
-<br>
+## 🚀 Tecnologías Utilizadas
 
-## :dart: About
+### 🛠️ Backend
 
-Describe your project
+- **Node.js** – Motor principal del servidor
+- **Express** – Framework ligero para el backend
+- **PostgreSQL** – Base de datos relacional
+- **JWT (JSON Web Tokens)** – Autenticación segura
+- **Nodemailer** – Envío de correos electrónicos (notificaciones, confirmaciones)
 
-## :sparkles: Features
+### 🌐 Frontend
 
-:heavy_check_mark: Feature 1;\
-:heavy_check_mark: Feature 2;\
-:heavy_check_mark: Feature 3;
+- **React 19** – Librería para la interfaz de usuario
+- **React Router DOM 7** – Navegación dinámica entre vistas
+- **Axios** – Cliente HTTP para consumir la API
+- **SweetAlert2** – Alertas modernas y personalizables
+- **Keen Slider** – Carruseles e interfaces deslizables
+- **React Icons** & **Lucide React** – Íconos visuales y elegantes
 
-## :rocket: Technologies
+---
 
-The following tools were used in this project:
+## 📦 Instalación
 
-- [Expo](https://expo.io/)
-- [Node.js](https://nodejs.org/en/)
-- [React](https://pt-br.reactjs.org/)
-- [React Native](https://reactnative.dev/)
-- [TypeScript](https://www.typescriptlang.org/)
+1.  Clona el repositorio:
+    ```bash
+    git clone https://github.com/tu_usuario/camolldent.git
+    ```
+2.  Instala las dependencias del servidor:
 
-## :white_check_mark: Requirements
+    ```bash
+    cd backend
+    npm install
+    ```
 
-Before starting :checkered_flag:, you need to have [Git](https://git-scm.com) and [Node](https://nodejs.org/en/) installed.
-
-## :checkered_flag: Starting
+3.  Configura tus variables de entorno (.env):
 
 ```bash
-# Clone this project
-$ git clone https://github.com/{{YOUR_GITHUB_USERNAME}}/camolldent-2-0
-
-# Access
-$ cd camolldent-2-0
-
-# Install dependencies
-$ yarn
-
-# Run the project
-$ yarn start
-
-# The server will initialize in the <http://localhost:3000>
+PORT=3000
+DB_HOST=localhost
+DB_USER=postgres
+DB_PASSWORD=tu_clave
+DB_NAME=camolldent
+JWT_SECRET=tu_clave_secreta
+EMAIL_USER=tu_correo
+EMAIL_PASS=tu_contraseña
 ```
 
-## :memo: License
+Inicia el servidor:
 
-This project is under license from MIT. For more details, see the [LICENSE](LICENSE) file.
+```bash
+npm start
+```
 
-Made with :heart: by <a href="https://github.com/{{YOUR_GITHUB_USERNAME}}" target="_blank">{{YOUR_NAME}}</a>
+5. Instala las dependencias del frontend:
 
-&#xa0;
+```bash
+cd ../frontend
+npm install
+```
 
-<a href="#top">Back to top</a>
+6. Ejecuta el cliente:
+
+```bash
+npm run dev
+```
