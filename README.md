@@ -69,3 +69,8 @@ npm install
 ```bash
 npm run dev
 ```
+
+---
+
+🧑‍💻 Autor
+Desarrollado con 💙 por Darío Gago
