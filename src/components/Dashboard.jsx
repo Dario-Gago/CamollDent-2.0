@@ -9,13 +9,17 @@ import {
   Mail,
   Phone,
   CreditCard,
-  Briefcase
+  Briefcase,
+  EyeOff,
+  Eye
 } from 'lucide-react'
 const url = import.meta.env.VITE_API_URL
 
 const Dashboard = () => {
-  const { logout, token } = useContext(AuthContext) // Agregamos token
+  const { logout, token } = useContext(AuthContext)
   const [appointments, setAppointments] = useState([])
+  const [hiddenAppointments, setHiddenAppointments] = useState([])
+  const [showHidden, setShowHidden] = useState(false)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
@@ -24,14 +28,12 @@ const Dashboard = () => {
       try {
         setLoading(true)
 
-        // Verificar que tenemos token
         if (!token) {
           setError('No hay token de autenticación')
           logout()
           return
         }
 
-        // Configurar headers con el token
         const config = {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -46,7 +48,6 @@ const Dashboard = () => {
         console.error('Error al cargar citas:', err)
 
         if (err.response?.status === 401 || err.response?.status === 403) {
-          // Token inválido o expirado
           setError('Sesión expirada. Por favor, inicia sesión nuevamente.')
           logout()
         } else {
@@ -58,16 +59,43 @@ const Dashboard = () => {
     }
 
     fetchAppointments()
-  }, [token, logout]) // Agregamos token como dependencia
+  }, [token, logout])
 
   const formatDate = (dateString) => {
-    // Eliminar la parte del timestamp y formatear para Chile (DD/MM/YYYY)
     const cleanDate = dateString.split('T')[0]
     const [year, month, day] = cleanDate.split('-')
     return `${day}/${month}/${year}`
   }
 
-  const citasDeHoy = appointments.filter((appt) => {
+  const hideAppointment = (appointmentId) => {
+    const appointmentToHide = appointments.find(
+      (appt) => appt.id === appointmentId
+    )
+    if (appointmentToHide) {
+      setHiddenAppointments((prev) => [...prev, appointmentToHide])
+      setAppointments((prev) =>
+        prev.filter((appt) => appt.id !== appointmentId)
+      )
+    }
+  }
+
+  const showAppointment = (appointmentId) => {
+    const appointmentToShow = hiddenAppointments.find(
+      (appt) => appt.id === appointmentId
+    )
+    if (appointmentToShow) {
+      setAppointments((prev) => [...prev, appointmentToShow])
+      setHiddenAppointments((prev) =>
+        prev.filter((appt) => appt.id !== appointmentId)
+      )
+    }
+  }
+
+  const visibleAppointments = appointments.filter(
+    (appt) => !hiddenAppointments.some((hidden) => hidden.id === appt.id)
+  )
+
+  const citasDeHoy = visibleAppointments.filter((appt) => {
     const apptDate = new Date(appt.date)
     const today = new Date()
 
@@ -82,22 +110,17 @@ const Dashboard = () => {
     try {
       let year, month, day
 
-      // Detectar formato de fecha
       if (apptDateStr.includes('-')) {
-        // Formato YYYY-MM-DD
         ;[year, month, day] = apptDateStr.split('-')
       } else if (apptDateStr.includes('/')) {
-        // Formato DD/MM/YYYY (chileno)
         ;[day, month, year] = apptDateStr.split('/')
       } else {
         console.error('Formato de fecha no reconocido:', apptDateStr)
         return false
       }
 
-      // Parsear tiempo
       const [hours, minutes] = apptTimeStr.split(':')
 
-      // Crear objeto Date (month - 1 porque los meses en JS empiezan en 0)
       const appointmentDateTime = new Date(
         parseInt(year),
         parseInt(month) - 1,
@@ -106,7 +129,6 @@ const Dashboard = () => {
         parseInt(minutes)
       )
 
-      // Verificar si la fecha es válida
       if (isNaN(appointmentDateTime.getTime())) {
         console.error('Fecha inválida creada con:', {
           year,
@@ -126,7 +148,6 @@ const Dashboard = () => {
     }
   }
 
-  // Mostrar loading
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-lime-50 flex items-center justify-center">
@@ -138,7 +159,6 @@ const Dashboard = () => {
     )
   }
 
-  // Mostrar error
   if (error) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-lime-50 flex items-center justify-center">
@@ -157,6 +177,10 @@ const Dashboard = () => {
     )
   }
 
+  const currentAppointments = showHidden
+    ? hiddenAppointments
+    : visibleAppointments
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-lime-50 p-4 md:p-8">
       <div className="max-w-6xl mx-auto">
@@ -166,19 +190,36 @@ const Dashboard = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
                 <h1 className="text-4xl font-bold bg-gradient-to-r from-cyan-600 to-lime-600 bg-clip-text text-transparent">
-                  Citas Agendadas
+                  {showHidden ? 'Citas Ocultas' : 'Citas Agendadas'}
                 </h1>
                 <p className="text-gray-600 mt-2">
-                  Gestiona todas tus citas de manera eficiente
+                  {showHidden
+                    ? 'Estas citas han sido ocultadas temporalmente'
+                    : 'Gestiona todas tus citas de manera eficiente'}
                 </p>
               </div>
-              <button
-                onClick={logout}
-                className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
-              >
-                <LogOut size={20} />
-                Salir
-              </button>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowHidden(!showHidden)}
+                  className={`flex items-center gap-2 font-semibold py-3 px-6 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200 ${
+                    showHidden
+                      ? 'bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white'
+                      : 'bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white'
+                  }`}
+                >
+                  {showHidden ? <Eye size={20} /> : <EyeOff size={20} />}
+                  {showHidden
+                    ? `Mostrar Visibles (${visibleAppointments.length})`
+                    : `Ver Ocultas (${hiddenAppointments.length})`}
+                </button>
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-semibold py-3 px-6 rounded-full shadow-lg transform hover:scale-105 transition-all duration-200"
+                >
+                  <LogOut size={20} />
+                  Salir
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -188,8 +229,12 @@ const Dashboard = () => {
           <div className="bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-2xl p-6 text-white shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-cyan-100 text-sm font-medium">Total Citas</p>
-                <p className="text-3xl font-bold">{appointments.length}</p>
+                <p className="text-cyan-100 text-sm font-medium">
+                  {showHidden ? 'Citas Ocultas' : 'Citas Visibles'}
+                </p>
+                <p className="text-3xl font-bold">
+                  {currentAppointments.length}
+                </p>
               </div>
               <Calendar className="h-12 w-12 text-cyan-200" />
             </div>
@@ -199,7 +244,7 @@ const Dashboard = () => {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-lime-100 text-sm font-medium">
-                  Citas de Hoy
+                  {showHidden ? 'Ocultas de Hoy' : 'Citas de Hoy'}
                 </p>
                 <p className="text-3xl font-bold">{citasDeHoy.length}</p>
               </div>
@@ -210,11 +255,9 @@ const Dashboard = () => {
           <div className="bg-gradient-to-r from-cyan-400 to-lime-400 rounded-2xl p-6 text-white shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-white text-sm font-medium">
-                  Clientes Únicos
-                </p>
+                <p className="text-white text-sm font-medium">Total Citas</p>
                 <p className="text-3xl font-bold">
-                  {new Set(appointments.map((appt) => appt.client_email)).size}
+                  {visibleAppointments.length + hiddenAppointments.length}
                 </p>
               </div>
               <User className="h-12 w-12 text-white" />
@@ -224,16 +267,22 @@ const Dashboard = () => {
 
         {/* Appointments List */}
         <div className="space-y-4">
-          {appointments.length === 0 ? (
+          {currentAppointments.length === 0 ? (
             <div className="bg-white rounded-2xl shadow-lg p-12 text-center">
               <Calendar className="h-16 w-16 mx-auto text-gray-300 mb-4" />
-              <p className="text-gray-500 text-lg">No hay citas aún.</p>
+              <p className="text-gray-500 text-lg">
+                {showHidden
+                  ? 'No hay citas ocultas.'
+                  : 'No hay citas visibles.'}
+              </p>
               <p className="text-gray-400 text-sm mt-2">
-                Las citas aparecerán aquí cuando se agenden
+                {showHidden
+                  ? 'Las citas ocultas aparecerán aquí'
+                  : 'Las citas aparecerán aquí cuando se agenden'}
               </p>
             </div>
           ) : (
-            appointments.map((appt) => (
+            currentAppointments.map((appt) => (
               <div
                 key={appt.id}
                 className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] overflow-hidden"
@@ -271,6 +320,21 @@ const Dashboard = () => {
                           {appt.time}
                         </span>
                       </div>
+                      <button
+                        onClick={() =>
+                          showHidden
+                            ? showAppointment(appt.id)
+                            : hideAppointment(appt.id)
+                        }
+                        className={`flex items-center gap-2 font-semibold py-2 px-4 rounded-full shadow-md transform hover:scale-105 transition-all duration-200 ${
+                          showHidden
+                            ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white'
+                            : 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white'
+                        }`}
+                      >
+                        {showHidden ? <Eye size={16} /> : <EyeOff size={16} />}
+                        {showHidden ? 'Mostrar' : 'Ocultar'}
+                      </button>
                     </div>
                   </div>
 
