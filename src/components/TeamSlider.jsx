@@ -6,31 +6,31 @@ const team = [
   {
     name: 'Dra. Estefania',
     specialty: 'Ortodoncia y Estética Dental',
-    image: 'public/about/Dentist/estefania.png',
+    image: '/about/Dentist/estefania.png',
     description: 'Especialista en transformar sonrisas con técnicas avanzadas'
   },
   {
     name: 'Dra. Francisca',
     specialty: 'Rehabilitación Oral',
-    image: 'public/about/Dentist/fran.png',
+    image: '/about/Dentist/fran.png',
     description: 'Experta en devolverle funcionalidad a tu sonrisa'
   },
   {
     name: 'Dra. Gabriela',
     specialty: 'Odontopediatría',
-    image: 'public/about/Dentist/gaby.png',
+    image: '/about/Dentist/gaby.png',
     description: 'Cuidando las sonrisas de los más pequeños'
   },
   {
     name: 'Dra. Javiera',
     specialty: 'Odontopediatría',
-    image: 'public/about/Dentist/javi.png',
+    image: '/about/Dentist/javi.png',
     description: 'Haciendo que los niños amen ir al dentista'
   },
   {
     name: 'Dra. Mariana',
     specialty: 'Odontopediatría',
-    image: 'public/about/Dentist/Mariana.png',
+    image: '/about/Dentist/Mariana.png',
     description: 'Creando experiencias positivas para toda la familia'
   }
 ]
