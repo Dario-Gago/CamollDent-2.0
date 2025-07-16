@@ -23,6 +23,29 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
+  // Clave para localStorage
+  const HIDDEN_APPOINTMENTS_KEY = 'hiddenAppointments'
+
+  // Función para cargar citas ocultas desde localStorage
+  const loadHiddenAppointments = () => {
+    try {
+      const stored = localStorage.getItem(HIDDEN_APPOINTMENTS_KEY)
+      return stored ? JSON.parse(stored) : []
+    } catch (error) {
+      console.error('Error al cargar citas ocultas desde localStorage:', error)
+      return []
+    }
+  }
+
+  // Función para guardar citas ocultas en localStorage
+  const saveHiddenAppointments = (hiddenAppts) => {
+    try {
+      localStorage.setItem(HIDDEN_APPOINTMENTS_KEY, JSON.stringify(hiddenAppts))
+    } catch (error) {
+      console.error('Error al guardar citas ocultas en localStorage:', error)
+    }
+  }
+
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
@@ -42,7 +65,21 @@ const Dashboard = () => {
         }
 
         const response = await axios.get(`${url}/appointments`, config)
-        setAppointments(response.data)
+        const allAppointments = response.data
+
+        // Cargar citas ocultas desde localStorage
+        const storedHiddenIds = loadHiddenAppointments()
+
+        // Separar citas visibles y ocultas basándose en los IDs guardados
+        const hidden = allAppointments.filter((appt) =>
+          storedHiddenIds.includes(appt.id)
+        )
+        const visible = allAppointments.filter(
+          (appt) => !storedHiddenIds.includes(appt.id)
+        )
+
+        setAppointments(visible)
+        setHiddenAppointments(hidden)
         setError('')
       } catch (err) {
         console.error('Error al cargar citas:', err)
@@ -72,10 +109,15 @@ const Dashboard = () => {
       (appt) => appt.id === appointmentId
     )
     if (appointmentToHide) {
-      setHiddenAppointments((prev) => [...prev, appointmentToHide])
+      const newHiddenAppointments = [...hiddenAppointments, appointmentToHide]
+      setHiddenAppointments(newHiddenAppointments)
       setAppointments((prev) =>
         prev.filter((appt) => appt.id !== appointmentId)
       )
+
+      // Guardar en localStorage solo los IDs
+      const hiddenIds = newHiddenAppointments.map((appt) => appt.id)
+      saveHiddenAppointments(hiddenIds)
     }
   }
 
@@ -85,9 +127,14 @@ const Dashboard = () => {
     )
     if (appointmentToShow) {
       setAppointments((prev) => [...prev, appointmentToShow])
-      setHiddenAppointments((prev) =>
-        prev.filter((appt) => appt.id !== appointmentId)
+      const newHiddenAppointments = hiddenAppointments.filter(
+        (appt) => appt.id !== appointmentId
       )
+      setHiddenAppointments(newHiddenAppointments)
+
+      // Actualizar localStorage
+      const hiddenIds = newHiddenAppointments.map((appt) => appt.id)
+      saveHiddenAppointments(hiddenIds)
     }
   }
 
